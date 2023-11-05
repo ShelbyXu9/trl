@@ -74,6 +74,23 @@ def is_wandb_available() -> bool:
     return importlib.util.find_spec("wandb") is not None
 
 
+def is_npu_available() -> bool:
+    if is_accelerate_greater_20_0:
+        import accelerate
+
+        return accelerate.utils.is_npu_available()
+    else:
+        if importlib.util.find_spec("torch_npu") is None:
+            return False
+        try:
+            import torch
+            import torch_npu  # noqa: F401
+
+            return hasattr(torch, "npu") and torch.npu.is_available()
+        except RuntimeError:
+            return False
+
+
 def is_xpu_available() -> bool:
     if is_accelerate_greater_20_0:
         import accelerate

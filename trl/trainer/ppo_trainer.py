@@ -349,6 +349,8 @@ class PPOTrainer(BaseTrainer):
         else:
             if is_xpu_available():
                 self.current_device = torch.device("xpu:0")
+            elif is_xpu_available():
+                self.current_device = torch.device("npu:0")
             else:
                 self.current_device = torch.device("cuda:0")
 

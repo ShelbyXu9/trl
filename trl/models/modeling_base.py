@@ -24,7 +24,7 @@ from huggingface_hub.utils import EntryNotFoundError, HFValidationError, LocalEn
 from safetensors.torch import load_file as safe_load_file
 from transformers import PreTrainedModel
 
-from ..import_utils import is_peft_available, is_transformers_greater_than, is_xpu_available
+from ..import_utils import is_npu_available, is_peft_available, is_transformers_greater_than, is_xpu_available
 
 
 if is_peft_available():
@@ -381,6 +381,8 @@ class PreTrainedModelWrapper(nn.Module):
         dummy_accelerator = Accelerator()
         if is_xpu_available():
             return f"xpu:{dummy_accelerator.local_process_index}"
+        elif is_npu_available():
+            return f"npu:{dummy_accelerator.local_process_index}"
         else:
             return dummy_accelerator.local_process_index if torch.cuda.is_available() else "cpu"
 
